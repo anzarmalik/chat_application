@@ -1,0 +1,33 @@
+<html>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<body>
+<h1>Welcome <%=currentUser%></h1>
+<h2> <%=currentUser%> select a person you want to chat with : </h2>
+    <div class="form-group">
+     <form action="/anzar" method="POST">
+      <input type="hidden" name="currentUser" readonly value= <%=currentUser%>  >
+        <select name="users">
+          <%for(var i=0;i < data.length;i++){%>
+        <option value= <%= data[i]%> > <%= data[i]%> </option>
+
+          <%}%>
+        </select>
+        <button type="submit">Submit</button>
+     </form>
+        
+    </div>
+    
+</body>
+<script>
+$(document).ready(function(){
+ 
+})
+</script>
+</html>
+
+
+
+
+
+

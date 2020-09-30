@@ -1,0 +1,113 @@
+ <!DOCTYPE html>
+ <html>
+     <title><%=currentUser%></title>
+ <head>
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <link href="stylesheets/style.css" rel="stylesheet" />
+ </head>
+<a href="/logout">logout</a>
+ <body>
+ 
+     <div class="container col-md-6 col-sm-6" id="chat" >
+         <!-- <input type="hidden" name="currentUser" value= <%=currentUser%>>
+         <input type="hidden" name="user" value= <%=user%>> -->
+
+         <h2>Hello <%=currentUser%></h2>
+        <h2 class="display-4">You are chatting with  <%=user%></h2>
+       
+        <br>
+          <br>
+          <div id="chat-window" style="height:300px">
+             <div  id="output"> 
+
+              
+              
+               <%for(var i =0; i < data1.length ;i++){%> 
+
+                        <%var arr = data1[i].split("~^`^~")%>
+
+                        <%if( arr[1] == currentUser && arr[2] == user){%>
+                        <br><p style="padding-left:400px;color:purple;background:violet">                     
+                        <%=arr[0]%>
+                        </p>
+                        <%} else if(arr[1] == user && arr[2] == currentUser){%>
+                        <br><p style="padding-left:70px;color:violet;background:purple">
+                         <%=arr[0]%>
+                         </p>
+                        <%}%>
+                        
+               <%}%>       
+
+            </div>
+          </div>
+          
+          <div class="">
+              <input type="text" id="message" name="message" class="message" placeholder="Write Message Here">
+              <br>
+              <button id="send"  class="btn btn-success">Send</button>
+          </div>
+     </div>
+  
+ </body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script>
+
+  $(document).ready(()=> {
+
+    //   var fetchedData = "<%=data1%>" ;
+
+      var socket = io.connect();
+
+      var message = $('#message');
+      var name = $('#name');
+      var output = $('#output');
+      var send = $('#send');
+      var feedback = $('#feedback');
+      var currentUser = "<%= currentUser %>" ;
+      var user = "<%= user %>";
+     
+    socket.on(currentUser,(data)=>{
+        console.log('inside on  frontend receving ');
+            
+        output.append("<br><p style='padding-left:70px;color:violet;background:purple '>"+data.message+"<p>")
+        // message.val('');   
+    })
+
+     
+
+    send.click(()=>{
+
+        var messageValue = message.val()  ;
+        output.append("<br><p style='padding-left:400px;color:purple;background:violet '>"+ message.val() +"</p>")
+        message.val(''); 
+        var chatData = {
+         currentUser:currentUser ,
+         name:user,
+         chat:messageValue
+         }
+
+          $.ajax({
+                type: 'POST',
+                url: '/chat',
+                data: chatData,
+                success: function(data){                                        
+                    socket.emit('send', {
+                        message:messageValue,
+                        user: user
+                    })
+                                  
+
+                }
+
+                });
+
+       }) 
+
+  
+
+})
+   
+
+</script>
